@@ -44,15 +44,19 @@ vlTurbidity['rendah'] = fuzz.trapmf(vlTurbidity.universe, [0, 0, 2, 5])
 vlTurbidity['tinggi'] = fuzz.trapmf(vlTurbidity.universe, [3, 5, 10, 10])
 
 vlDrinkable['tidak'] = fuzz.trapmf(vlDrinkable.universe, [0, 0, 30, 50])
-vlDrinkable['ya'] = fuzz.trapmf(vlDrinkable.universe, [40, 50, 100, 100])
+vlDrinkable['sedang'] = fuzz.trapmf(vlDrinkable.universe, [40, 50, 70, 80])
+vlDrinkable['ya'] = fuzz.trapmf(vlDrinkable.universe, [70, 80, 100, 100])
 
 # Rule
 rule1 = ctrl.Rule(vlPH['asam'] | vlTDS['tinggi'] | vlTurbidity['tinggi'], vlDrinkable['tidak'])
-rule2 = ctrl.Rule(vlPH['netral'] | vlTDS['rendah'] | vlTurbidity['rendah'], vlDrinkable['ya'])
+rule2 = ctrl.Rule(vlPH['netral'] & vlTDS['rendah'] & vlTurbidity['rendah'], vlDrinkable['ya'])
+rule3 = ctrl.Rule(vlPH['basa'] & vlTDS['rendah'] & vlTurbidity['tinggi'], vlDrinkable['tidak'])
+rule4 = ctrl.Rule(vlPH['asam'] & vlTDS['rendah'] & vlTurbidity['rendah'], vlDrinkable['sedang'])
+rule5 = ctrl.Rule(vlPH['netral'] | vlTDS['tinggi'] | vlTurbidity['rendah'], vlDrinkable['sedang'])
 
-set_air_minum = ctrl.ControlSystem([rule1, rule2])
+
+set_air_minum = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5])
 air_minum = ctrl.ControlSystemSimulation(set_air_minum)
-
 
 while True:
     air_minum.input['ph'] = get_ph()
