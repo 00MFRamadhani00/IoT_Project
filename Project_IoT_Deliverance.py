@@ -71,11 +71,13 @@ while True:
     print('Nilai TDS:', get_tds())
     print('Nilai Turbidity:', get_turbidity())
     print('Kualitas Minum:', drinkability)
-    if drinkability >= 70:
-        print('AIR AMAN UNTUK DIMINUM')
-    elif drinkability >= 50:
+
+    if drinkability <= 30:
+        print('AIR BERBAHAYA')
+    elif drinkability <= 70:
         print('SEBAIKNYA JANGAN DIMINUM')
     else:
-        print('AIR BERBAHAYA')
+        print('AIR AMAN UNTUK DIMINUM')
 
     time.sleep(0.05)
+
