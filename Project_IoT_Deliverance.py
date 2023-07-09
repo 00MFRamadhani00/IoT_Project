@@ -1,4 +1,3 @@
-#import pyfirmata
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
@@ -12,7 +11,6 @@ GPIO.setmode(GPIO.BCM)
 pinPH = 4
 pinTDS = 5
 pinTBDT = 26
-
 
 GPIO.setup(pinPH, GPIO.IN)
 GPIO.setup(pinTDS, GPIO.IN)
@@ -55,23 +53,24 @@ rule2 = ctrl.Rule(vlPH['netral'] | vlTDS['rendah'] | vlTurbidity['rendah'], vlDr
 set_air_minum = ctrl.ControlSystem([rule1, rule2])
 air_minum = ctrl.ControlSystemSimulation(set_air_minum)
 
-air_minum.input['ph'] = get_ph()
-air_minum.input['tds'] = get_tds()
-air_minum.input['turbidity'] =get_turbidity()
-
-air_minum.compute()
-
-drinkability = air_minum.output['drinkable']
-
 while True:
+    air_minum.input['ph'] = get_ph()
+    air_minum.input['tds'] = get_tds()
+    air_minum.input['turbidity'] = get_turbidity()
+
+    air_minum.compute()
+
+    drinkability = air_minum.output['drinkable']
+
     print('Nilai PH:', get_ph())
     print('Nilai TDS:', get_tds())
     print('Nilai Turbidity:', get_turbidity())
     print('Kualitas Minum:', drinkability)
     if drinkability >= 70:
         print('AIR AMAN UNTUK DIMINUM')
-    elif drinkability >=50:
+    elif drinkability >= 50:
         print('SEBAIKNYA JANGAN DIMINUM')
     else:
         print('AIR BERBAHAYA')
+
     time.sleep(0.05)
